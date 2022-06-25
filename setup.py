@@ -1,6 +1,6 @@
 from pathlib import Path
 from setuptools import find_packages, setup
-from src.expense_bot.version import __version__
+from src.expense_bot import __version__
 
 PROJECT_FOLDER = Path(__file__).parent
 
