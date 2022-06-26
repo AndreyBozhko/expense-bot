@@ -1,4 +1,4 @@
-FROM python:3.9.6-buster
+FROM python:3.9-buster
 RUN pip install --upgrade pip==22.1.2
 
 ENV PIP_PREFIX=/usr/local/share/pip_global
