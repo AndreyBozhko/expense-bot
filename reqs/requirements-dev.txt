@@ -72,7 +72,11 @@ google-api-core==2.8.1
     #   -r requirements.txt
     #   google-api-python-client
 google-api-python-client==2.50.0
-    # via -r requirements.txt
+    # via
+    #   -r requirements.txt
+    #   google-api-python-client-stubs
+google-api-python-client-stubs==1.11.0
+    # via -r requirements-dev.in
 google-auth==2.7.0
     # via
     #   -r requirements.txt
@@ -202,6 +206,7 @@ typing-extensions==4.2.0
     # via
     #   astroid
     #   black
+    #   google-api-python-client-stubs
     #   mypy
     #   pylint
 uritemplate==4.1.1
