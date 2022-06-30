@@ -4,7 +4,7 @@
 #
 #    pip-compile requirements-dev.in
 #
-aiogram==2.20
+aiogram==2.21
     # via -r requirements.txt
 aiohttp==3.8.1
     # via
