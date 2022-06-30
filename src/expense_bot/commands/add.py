@@ -24,7 +24,7 @@ class Add(StatesGroup):
     """States for /add command flow."""
 
     amount = State()
-    merchant = State()
+    vendor = State()
 
 
 def configure_add_command(dp: Dispatcher):
@@ -57,7 +57,7 @@ def configure_add_command(dp: Dispatcher):
             ),
         )
 
-    @dp.message_handler(state=Add.merchant)
+    @dp.message_handler(state=Add.vendor)
     @default_message_logging
     async def cmd_add_state2(message: Message, state: FSMContext):
         data = await state.get_data()

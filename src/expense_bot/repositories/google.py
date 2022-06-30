@@ -2,7 +2,7 @@
 import logging
 from datetime import date
 from enum import Enum, auto
-from functools import lru_cache
+from functools import cache
 from typing import Iterable
 
 from google.oauth2.service_account import Credentials
@@ -63,23 +63,24 @@ class GoogleSheets(Repository):
         self._template_sheet = template_sheet
         self._formula_cell = formula_cell_range
 
-    @lru_cache(maxsize=2)
-    def _sheet_service_with_scope(self, scope: Scope):
+    @staticmethod
+    @cache
+    def _sheet_service_with_scope(creds: Credentials, scope: Scope):
         logger.info(
             "Configuring sheet service with scope '%s'...", scope.name
         )
         service = build(
-            "sheets", "v4", credentials=self.creds.with_scopes([scope.value])
+            "sheets", "v4", credentials=creds.with_scopes([scope.value])
         )
         return service.spreadsheets()  # pylint: disable=E1101
 
     @property
     def _sheet(self):
-        return self._sheet_service_with_scope(Scope.READ)
+        return self._sheet_service_with_scope(self.creds, Scope.READ)
 
     @property
     def _mutable_sheet(self):
-        return self._sheet_service_with_scope(Scope.WRITE)
+        return self._sheet_service_with_scope(self.creds, Scope.WRITE)
 
     @staticmethod
     def _to_internal(items: list[ExpenseItem]) -> list[str]:

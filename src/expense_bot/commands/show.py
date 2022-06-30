@@ -74,7 +74,7 @@ def configure_show_command(dp: Dispatcher):
     @default_message_logging
     async def cmd_show_state0(message: Message):
         if message.get_args():
-            await _do_show(message, message.text.split()[-1])
+            await _do_show(message, message.text.split(maxsplit=1)[-1])
             return
 
         await Show.selected_date.set()
