@@ -50,6 +50,10 @@ Bot.set_current(dp.bot)
 
 async def handle_lambda_event(event: dict):
     """Process the webhook payload sent to the Lambda function
-    as a single :type:`aiogram.types.Update` event."""
+    as a single :type:`aiogram.types.Update` event.
+
+    Note: this function is NOT stateless - but for now
+    it's OK to assume that AWS Lambda would reuse the same
+    runtime for handling a few requests back-to-back."""
     update = Update.to_object(json.loads(event["body"]))
     await dp.process_update(update)

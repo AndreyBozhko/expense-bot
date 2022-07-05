@@ -15,7 +15,7 @@ from ..secrets import secrets
 logger = logging.getLogger()
 
 
-class Scope(Enum):
+class Scope(str, Enum):
     """Authorization scopes for Google Sheets API."""
 
     READ = "https://www.googleapis.com/auth/spreadsheets.readonly"
@@ -148,7 +148,7 @@ class GoogleSheets(Repository):
         if item.cat is SPEND:
             msg = f"No room to add more purchases for {dt}!"
         else:
-            msg = f"No room to add more earnings for {dt.strftime('%m/%Y')}!"
+            msg = f"No room to add more earnings for {dt:%m/%Y}!"
         assert len(items) < 4, msg
 
         items.append(item)
