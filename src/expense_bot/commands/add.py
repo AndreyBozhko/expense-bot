@@ -1,6 +1,5 @@
 """Implementation of /add command."""
 import logging
-from datetime import date
 from random import choice
 
 from aiogram import Dispatcher
@@ -15,6 +14,7 @@ from aiogram.types.reply_keyboard import (
 
 from ..model import EARN, SPEND, ExpenseItem
 from ..repository import Repository
+from ..utils import parse_datetime
 from .common import auth_required, default_message_logging
 
 logger = logging.getLogger()
@@ -33,7 +33,14 @@ def configure_add_command(dp: Dispatcher):
     @dp.message_handler(auth_required, commands=["add"])
     @default_message_logging
     async def cmd_add_state0(message: Message):
+        dt_str = message.get_args() or "today"
+        dt = parse_datetime(dt_str).date()
+
         await Add.amount.set()
+
+        state = dp.current_state()
+        await state.update_data(dt=dt)
+
         await message.answer("Amount in $?")
 
     income_descriptions = ["Paycheck", "Cashback"]
@@ -62,14 +69,14 @@ def configure_add_command(dp: Dispatcher):
     async def cmd_add_state2(message: Message, state: FSMContext):
         data = await state.get_data()
 
-        amt, vnd = data["amount"], message.text
+        amt, dt, vnd = data["amount"], data["dt"], message.text
         item = ExpenseItem(
             amt,
             vnd,
             EARN if vnd in income_descriptions else SPEND,
         )
 
-        Repository.current().add(item, dt=date.today())
+        Repository.current().add(item, dt=dt)
 
         await message.answer(
             choice(["🎉", "🥳", "🙌", "✔️", "💾"]),

@@ -1,4 +1,6 @@
 """Utility functions and helpers."""
+from contextlib import suppress
+from datetime import datetime, timedelta
 import logging
 import os
 from typing import Any, Iterable, Type, TypeVar
@@ -42,3 +44,21 @@ class FactoryMixin:  # pylint: disable=R0903
         raise ValueError(
             f"Could not find subclass of {cls.__name__} for name: {type_name}"
         )
+
+
+FORMATS = ["%Y-%m-%d", "%Y%m%d", "%m/%d/%Y", "%m/%d/%y"]
+
+
+def parse_datetime(value: str) -> datetime:
+    """Parse provided string as date."""
+    if value == "today":
+        return datetime.today()
+    if value == "yesterday":
+        return datetime.today() - timedelta(days=1)
+
+    for fmt in FORMATS:
+        with suppress(ValueError):
+            return datetime.strptime(value, fmt)
+    raise ValueError(
+        f"time data '{value}' does not match any of the formats {FORMATS}"
+    )

@@ -1,7 +1,5 @@
 """Implementation of /show command."""
 import logging
-from contextlib import suppress
-from datetime import datetime, timedelta
 from random import choice
 
 from aiogram import Dispatcher
@@ -16,26 +14,10 @@ from aiogram.types.reply_keyboard import (
 )
 
 from ..repository import Repository
+from ..utils import parse_datetime
 from .common import auth_required, default_message_logging
 
 logger = logging.getLogger()
-
-FORMATS = ["%Y-%m-%d", "%Y%m%d", "%m/%d/%Y", "%m/%d/%y"]
-
-
-def parse_datetime(value: str) -> datetime:
-    """Parse provided string as date."""
-    if value == "today":
-        return datetime.today()
-    if value == "yesterday":
-        return datetime.today() - timedelta(days=1)
-
-    for fmt in FORMATS:
-        with suppress(ValueError):
-            return datetime.strptime(value, fmt)
-    raise ValueError(
-        f"time data '{value}' does not match any of the formats {FORMATS}"
-    )
 
 
 async def _do_show(message: Message, dt_str: str):
@@ -73,8 +55,9 @@ def configure_show_command(dp: Dispatcher):
     @dp.message_handler(auth_required, commands=["show"])
     @default_message_logging
     async def cmd_show_state0(message: Message):
-        if message.get_args():
-            await _do_show(message, message.text.split(maxsplit=1)[-1])
+        args = message.get_args()
+        if args:
+            await _do_show(message, args)
             return
 
         await Show.selected_date.set()
