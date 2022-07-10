@@ -5,11 +5,10 @@ from random import choice
 from aiogram import Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
-from aiogram.types import Message
-from aiogram.types.reply_keyboard import (
-    KeyboardButton,
-    ReplyKeyboardMarkup,
-    ReplyKeyboardRemove,
+from aiogram.types import CallbackQuery, Message
+from aiogram.types.inline_keyboard import (
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
 )
 
 from ..model import EARN, SPEND, ExpenseItem
@@ -52,14 +51,10 @@ def configure_add_command(dp: Dispatcher):
         await Add.next()
         await message.answer(
             "Description?",
-            reply_markup=ReplyKeyboardMarkup(
-                one_time_keyboard=True,
-                resize_keyboard=True,
-                keyboard=[
-                    [
-                        KeyboardButton(text=desc)
-                        for desc in income_descriptions
-                    ]
+            reply_markup=InlineKeyboardMarkup().add(
+                *[
+                    InlineKeyboardButton(desc, callback_data=desc)
+                    for desc in income_descriptions
                 ],
             ),
         )
@@ -78,8 +73,13 @@ def configure_add_command(dp: Dispatcher):
 
         Repository.current().add(item, dt=dt)
 
-        await message.answer(
-            choice(["🎉", "🥳", "🙌", "✔️", "💾"]),
-            reply_markup=ReplyKeyboardRemove(),
-        )
+        await message.answer(choice(["🎉", "🥳", "🙌", "✔️", "💾"]))
         await state.finish()
+
+    @dp.callback_query_handler(state=Add.vendor)
+    async def cb_add_state2(callback: CallbackQuery, state: FSMContext):
+        msg = callback.message
+        await msg.answer(callback.data)
+
+        msg.text = callback.data
+        await cmd_add_state2(msg, state)

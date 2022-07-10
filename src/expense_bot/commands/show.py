@@ -5,13 +5,12 @@ from random import choice
 from aiogram import Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
-from aiogram.types import Message
-from aiogram.types.message_entity import MessageEntity
-from aiogram.types.reply_keyboard import (
-    KeyboardButton,
-    ReplyKeyboardMarkup,
-    ReplyKeyboardRemove,
+from aiogram.types import CallbackQuery, Message
+from aiogram.types.inline_keyboard import (
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
 )
+from aiogram.types.message_entity import MessageEntity
 
 from ..repository import Repository
 from ..utils import parse_datetime
@@ -25,10 +24,7 @@ async def _do_show(message: Message, dt_str: str):
     items = Repository.current().get_all(dt=date_time.date())
 
     if not items:
-        await message.answer(
-            choice(["🤷‍♂️", "😴", "😪"]),
-            reply_markup=ReplyKeyboardRemove(),
-        )
+        await message.answer(choice(["🤷‍♂️", "😴", "😪"]))
 
     for item in items:
         vnd, amt = item.vnd, f"${item.amt:.2f}"
@@ -39,7 +35,6 @@ async def _do_show(message: Message, dt_str: str):
                 MessageEntity("bold", 0, len(vnd)),
                 MessageEntity("code", len(vnd) + 2, len(amt)),
             ],
-            reply_markup=ReplyKeyboardRemove(),
         )
 
 
@@ -63,15 +58,11 @@ def configure_show_command(dp: Dispatcher):
         await Show.selected_date.set()
         await message.answer(
             "Which date?",
-            reply_markup=ReplyKeyboardMarkup(
-                one_time_keyboard=True,
-                resize_keyboard=True,
-                keyboard=[
-                    [
-                        KeyboardButton(text="today"),
-                        KeyboardButton(text="yesterday"),
-                    ]
-                ],
+            reply_markup=InlineKeyboardMarkup().add(
+                *[
+                    InlineKeyboardButton(data, callback_data=data)
+                    for data in ["today", "yesterday"]
+                ]
             ),
         )
 
@@ -80,3 +71,11 @@ def configure_show_command(dp: Dispatcher):
     async def cmd_show_state1(message: Message, state: FSMContext):
         await _do_show(message, message.text)
         await state.finish()
+
+    @dp.callback_query_handler(state=Show.selected_date)
+    async def cb_show_state1(callback: CallbackQuery, state: FSMContext):
+        msg = callback.message
+        await msg.answer(callback.data)
+
+        msg.text = callback.data
+        await cmd_show_state1(msg, state)

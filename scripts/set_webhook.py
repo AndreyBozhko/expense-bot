@@ -30,7 +30,9 @@ async def main():
         api_id, api_url = get_api_by_name("expenseBotAPI")
         _, route = next(get_routes_for_api(api_id))
 
-        await bot.set_webhook(api_url + route, allowed_updates=["message"])
+        await bot.set_webhook(
+            api_url + route, allowed_updates=["message", "callback_query"]
+        )
         return await bot.get_webhook_info()
     finally:
         await bot.close()

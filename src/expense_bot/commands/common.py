@@ -8,7 +8,6 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 from aiogram.types import Message, Update
 from aiogram.types.message_entity import MessageEntity
-from aiogram.types.reply_keyboard import ReplyKeyboardRemove
 
 logger = logging.getLogger()
 
@@ -83,9 +82,7 @@ def configure_error_handling(dp: Dispatcher):
     @dp.message_handler(auth_required)
     @default_message_logging
     async def cmd_unrecognized(message: Message):
-        await message.answer(
-            "Command not recognized :(", reply_markup=ReplyKeyboardRemove()
-        )
+        await message.answer("Command not recognized :(")
 
 
 def configure_start_command(dp: Dispatcher):
@@ -114,7 +111,4 @@ def configure_cancel_command(dp: Dispatcher):
         operation = current_state.lower().split(":")[0]
 
         await state.finish()
-        await message.answer(
-            f"Operation /{operation} cancelled",
-            reply_markup=ReplyKeyboardRemove(),
-        )
+        await message.answer(f"Operation /{operation} cancelled")

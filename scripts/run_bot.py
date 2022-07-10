@@ -16,4 +16,6 @@ def creds():
 
 if __name__ == "__main__":
     Repository.set_current(Repository.new("InMemory"))
-    executor.start_polling(dp, skip_updates=True, allowed_updates=["message"])
+    executor.start_polling(
+        dp, skip_updates=True, allowed_updates=["message", "callback_query"]
+    )
