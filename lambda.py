@@ -33,7 +33,7 @@ Repository.set_current(Repository.new("GoogleSheets"))
 
 def handler(event: dict, context: "LambdaContext"):
     """Entry point for the Lambda function."""
-    logger.info("Expense Bot (version %s) started!", bot.__version__)
+    logger.info("Expense Bot (version %s) is running!", bot.__version__)
     return asyncio.get_event_loop().run_until_complete(
         bot.handle_lambda_event(event)
     )
