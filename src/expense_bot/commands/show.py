@@ -72,7 +72,7 @@ def configure_show_command(dp: Dispatcher):
         await _do_show(message, message.text)
         await state.finish()
 
-    @dp.callback_query_handler(state=Show.selected_date)
+    @dp.callback_query_handler(auth_required, state=Show.selected_date)
     async def cb_show_state1(callback: CallbackQuery, state: FSMContext):
         msg = callback.message
         await msg.answer(callback.data)

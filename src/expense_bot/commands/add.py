@@ -76,7 +76,7 @@ def configure_add_command(dp: Dispatcher):
         await message.answer(choice(["🎉", "🥳", "🙌", "✔️", "💾"]))
         await state.finish()
 
-    @dp.callback_query_handler(state=Add.vendor)
+    @dp.callback_query_handler(auth_required, state=Add.vendor)
     async def cb_add_state2(callback: CallbackQuery, state: FSMContext):
         msg = callback.message
         await msg.answer(callback.data)
