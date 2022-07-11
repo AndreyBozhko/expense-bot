@@ -77,7 +77,7 @@ def configure_error_handling(dp: Dispatcher):
 
         # dispatcher won't re-raise the exception
         # if a truthy value is returned from handler
-        return True
+        return exc
 
     @dp.message_handler(auth_required)
     @default_message_logging
