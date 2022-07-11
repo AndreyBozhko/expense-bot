@@ -44,7 +44,7 @@ def configure_add_command(dp: Dispatcher):
 
     income_descriptions = ["Paycheck", "Cashback"]
 
-    @dp.message_handler(state=Add.amount)
+    @dp.message_handler(auth_required, state=Add.amount)
     @default_message_logging
     async def cmd_add_state1(message: Message, state: FSMContext):
         await state.update_data(amount=float(message.text))
@@ -59,7 +59,7 @@ def configure_add_command(dp: Dispatcher):
             ),
         )
 
-    @dp.message_handler(state=Add.vendor)
+    @dp.message_handler(auth_required, state=Add.vendor)
     @default_message_logging
     async def cmd_add_state2(message: Message, state: FSMContext):
         data = await state.get_data()

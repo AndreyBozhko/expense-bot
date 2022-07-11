@@ -66,7 +66,7 @@ def configure_show_command(dp: Dispatcher):
             ),
         )
 
-    @dp.message_handler(state=Show.selected_date)
+    @dp.message_handler(auth_required, state=Show.selected_date)
     @default_message_logging
     async def cmd_show_state1(message: Message, state: FSMContext):
         await _do_show(message, message.text)

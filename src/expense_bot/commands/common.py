@@ -98,8 +98,10 @@ def configure_start_command(dp: Dispatcher):
 def configure_cancel_command(dp: Dispatcher):
     """Configure logic behind /cancel command."""
 
-    @dp.message_handler(state="*", commands="cancel")
-    @dp.message_handler(Text(equals="cancel", ignore_case=True), state="*")
+    @dp.message_handler(auth_required, state="*", commands="cancel")
+    @dp.message_handler(
+        auth_required, Text(equals="cancel", ignore_case=True), state="*"
+    )
     @default_message_logging
     async def cmd_cancel(message: Message, state: FSMContext):
         current_state = await state.get_state()
