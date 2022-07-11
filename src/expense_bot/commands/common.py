@@ -92,7 +92,13 @@ def configure_start_command(dp: Dispatcher):
     @default_message_logging
     async def cmd_start(message: Message):
         """Handler for `start` command."""
-        await message.answer("Hi! 👋\nI'm your personal expense tracking bot!")
+        mention = message.from_user.mention
+        await message.answer(
+            f"Hi {mention}! 👋\nI'm your personal expense tracking bot!",
+            entities=[
+                MessageEntity("mention", 3, len(mention)),
+            ],
+        )
 
 
 def configure_cancel_command(dp: Dispatcher):
