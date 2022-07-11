@@ -75,7 +75,12 @@ def configure_show_command(dp: Dispatcher):
     @dp.callback_query_handler(auth_required, state=Show.selected_date)
     async def cb_show_state1(callback: CallbackQuery, state: FSMContext):
         msg = callback.message
-        await msg.answer(callback.data)
+        await msg.answer(
+            "👉 " + callback.data,
+            entities=[
+                MessageEntity("italic", 2, len(callback.data)),
+            ],
+        )
 
         msg.text = callback.data
         await cmd_show_state1(msg, state)

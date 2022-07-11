@@ -10,6 +10,7 @@ from aiogram.types.inline_keyboard import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
 )
+from aiogram.types.message_entity import MessageEntity
 
 from ..model import EARN, SPEND, ExpenseItem
 from ..repository import Repository
@@ -79,7 +80,12 @@ def configure_add_command(dp: Dispatcher):
     @dp.callback_query_handler(auth_required, state=Add.vendor)
     async def cb_add_state2(callback: CallbackQuery, state: FSMContext):
         msg = callback.message
-        await msg.answer(callback.data)
+        await msg.answer(
+            "👉 " + callback.data,
+            entities=[
+                MessageEntity("italic", 2, len(callback.data)),
+            ],
+        )
 
         msg.text = callback.data
         await cmd_add_state2(msg, state)
