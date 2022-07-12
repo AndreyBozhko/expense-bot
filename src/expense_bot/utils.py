@@ -1,6 +1,6 @@
 """Utility functions and helpers."""
 from contextlib import suppress
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 import logging
 import os
 from typing import Any, Iterable, Type, TypeVar
@@ -49,16 +49,16 @@ class FactoryMixin:  # pylint: disable=R0903
 FORMATS = ["%Y-%m-%d", "%Y%m%d", "%m/%d/%Y", "%m/%d/%y"]
 
 
-def parse_datetime(value: str) -> datetime:
+def parse_date(value: str) -> date:
     """Parse provided string as date."""
     if value == "today":
-        return datetime.today()
+        return date.today()
     if value == "yesterday":
-        return datetime.today() - timedelta(days=1)
+        return date.today() - timedelta(days=1)
 
     for fmt in FORMATS:
         with suppress(ValueError):
-            return datetime.strptime(value, fmt)
+            return datetime.strptime(value, fmt).date()
     raise ValueError(
         f"time data '{value}' does not match any of the formats {FORMATS}"
     )

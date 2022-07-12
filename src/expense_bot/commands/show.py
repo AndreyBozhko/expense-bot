@@ -13,15 +13,15 @@ from aiogram.types.inline_keyboard import (
 from aiogram.types.message_entity import MessageEntity
 
 from ..repository import Repository
-from ..utils import parse_datetime
+from ..utils import parse_date
 from .common import auth_required, default_message_logging
 
 logger = logging.getLogger()
 
 
 async def _do_show(message: Message, dt_str: str):
-    date_time = parse_datetime(dt_str)
-    items = Repository.current().get_all(dt=date_time.date())
+    dt = parse_date(dt_str)
+    items = Repository.current().get_all(dt=dt)
 
     if not items:
         await message.answer(choice(["🤷‍♂️", "😴", "😪"]))

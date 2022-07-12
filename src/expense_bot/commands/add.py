@@ -14,7 +14,7 @@ from aiogram.types.message_entity import MessageEntity
 
 from ..model import EARN, SPEND, ExpenseItem
 from ..repository import Repository
-from ..utils import parse_datetime
+from ..utils import parse_date
 from .common import auth_required, default_message_logging
 
 logger = logging.getLogger()
@@ -34,7 +34,7 @@ def configure_add_command(dp: Dispatcher):
     @default_message_logging
     async def cmd_add_state0(message: Message):
         dt_str = message.get_args() or "today"
-        dt = parse_datetime(dt_str).date()
+        dt = parse_date(dt_str)
 
         await Add.amount.set()
 
