@@ -1,2 +1,5 @@
+[MESSAGES CONTROL]
+disable = R0801
+
 [FORMAT]
 good-names=dt,dp

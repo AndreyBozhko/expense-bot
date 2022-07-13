@@ -1,8 +1,8 @@
 """Utility functions and helpers."""
-from contextlib import suppress
-from datetime import date, datetime, timedelta
 import logging
 import os
+from contextlib import suppress
+from datetime import date, datetime, timedelta
 from typing import Any, Iterable, Type, TypeVar
 
 
