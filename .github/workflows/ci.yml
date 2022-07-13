@@ -1,0 +1,62 @@
+name: Run Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    if: github.repository == 'AndreyBozhko/expense-bot'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.9]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m venv venv
+        source venv/bin/activate
+        pip install -r reqs/requirements.txt -r reqs/requirements-dev.txt
+
+    - name: Run Tests (pytest)
+      env:
+        BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+        PYTHONPATH: ./src
+      run: |
+        source venv/bin/activate
+        pytest -v
+
+    - name: Run Static Analysis (mypy)
+      run: |
+        source venv/bin/activate
+        mypy src/
+
+    - name: Verify Code Style (black)
+      run: |
+        source venv/bin/activate
+        black --verbose --check --line-length 78 src/
+
+    - name: Enforce Code Style (flake8)
+      run: |
+        source venv/bin/activate
+        flake8 src/
+
+    - name: Enforce Import Order (isort)
+      run: |
+        source venv/bin/activate
+        isort -c src/
+
+    - name: Lint Code (pylint)
+      run: |
+        source venv/bin/activate
+        pylint src/
