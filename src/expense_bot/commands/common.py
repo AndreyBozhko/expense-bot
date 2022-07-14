@@ -1,12 +1,12 @@
 """Common bot configurations."""
 import logging
 from functools import wraps
-from typing import Any, Callable, Coroutine, overload
+from typing import Any, Callable, Coroutine, Union, overload
 
 from aiogram import Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
-from aiogram.types import Message, Update
+from aiogram.types import CallbackQuery, Message, Update
 from aiogram.types.message_entity import MessageEntity
 
 logger = logging.getLogger()
@@ -16,7 +16,7 @@ class AccessDenied(Exception):
     """Exception to indicate that the user is not authorized."""
 
 
-def auth_required(msg: Message) -> bool:
+def auth_required(msg: Union[CallbackQuery, Message]) -> bool:
     """Allow messages from a single user only."""
     if msg.from_user.id != 288450274:
         raise AccessDenied("Unauthorized!")
