@@ -21,10 +21,9 @@ logger = logging.getLogger()
 def service_acct_credentials():
     secret_name = "expenseBot/credentials/gsheet"
 
-    session = boto3.session.Session()
-    client = session.client(service_name="secretsmanager")
-
+    client = boto3.client(service_name="secretsmanager")
     response = client.get_secret_value(SecretId=secret_name)
+
     return json.loads(response["SecretString"])
 
 
