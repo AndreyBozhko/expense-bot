@@ -44,7 +44,7 @@ cachetools==5.2.0
     # via
     #   -r requirements.txt
     #   google-auth
-certifi==2022.5.18.1
+certifi==2022.12.7
     # via
     #   -r requirements.txt
     #   aiogram
