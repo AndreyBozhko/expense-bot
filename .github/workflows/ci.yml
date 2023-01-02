@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    if: github.repository == 'AndreyBozhko/expense-bot'
+    if: github.repository_owner == 'AndreyBozhko'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -44,7 +44,7 @@ jobs:
     - name: Verify Code Style (black)
       run: |
         source venv/bin/activate
-        black --verbose --check --line-length 78 src/
+        black --verbose --check src/
 
     - name: Enforce Code Style (flake8)
       run: |
