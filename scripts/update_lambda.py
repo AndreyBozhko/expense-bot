@@ -31,7 +31,11 @@ if __name__ == "__main__":
 
     print(f"-> Installing packages into {TMP_DIR}")
     subprocess.run(
-        f"pip install . --target {TMP_DIR}".split(),
+        f"pip install -r reqs/requirements.txt --target {TMP_DIR}".split(),
+        check=True,
+    )
+    subprocess.run(
+        f"pip install . --no-deps --target {TMP_DIR}".split(),
         check=True,
     )
 
