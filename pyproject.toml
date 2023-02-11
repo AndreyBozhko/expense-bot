@@ -23,8 +23,9 @@ dev = [
     "black",
     "boto3==1.20.32",
     "botocore==1.23.32",
-    "google-api-python-client-stubs",
     "flake8",
+    "flake8-pyproject",
+    "google-api-python-client-stubs",
     "mypy",
     "pip-tools",
     "pylint",
@@ -34,13 +35,15 @@ dev = [
 
 [tool.setuptools]
 package-dir = {"" = "src"}
-zip-safe = false
 
 [tool.setuptools.dynamic]
 version = {attr = "expense_bot.__version__"}
 
 [tool.black]
 line-length = 78
+
+[tool.flake8]
+ignore = ["E203"]
 
 [tool.mypy]
 ignore_missing_imports = true

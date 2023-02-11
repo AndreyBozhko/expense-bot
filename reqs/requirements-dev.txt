@@ -49,7 +49,11 @@ dill==0.3.5.1
     # via pylint
 exceptiongroup==1.0.1
     # via pytest
-flake8==4.0.1
+flake8==6.0.0
+    # via
+    #   expense-bot (pyproject.toml)
+    #   flake8-pyproject
+flake8-pyproject==1.2.2
     # via expense-bot (pyproject.toml)
 frozenlist==1.3.0
     # via
@@ -90,7 +94,7 @@ jmespath==0.10.0
     #   botocore
 lazy-object-proxy==1.7.1
     # via astroid
-mccabe==0.6.1
+mccabe==0.7.0
     # via
     #   flake8
     #   pylint
@@ -128,9 +132,9 @@ pyasn1==0.4.8
     #   rsa
 pyasn1-modules==0.2.8
     # via google-auth
-pycodestyle==2.8.0
+pycodestyle==2.10.0
     # via flake8
-pyflakes==2.4.0
+pyflakes==3.0.1
     # via flake8
 pylint==2.14.1
     # via expense-bot (pyproject.toml)
@@ -160,6 +164,7 @@ six==1.16.0
 tomli==2.0.1
     # via
     #   black
+    #   flake8-pyproject
     #   mypy
     #   pep517
     #   pylint
