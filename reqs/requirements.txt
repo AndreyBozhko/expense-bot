@@ -79,7 +79,7 @@ six==1.16.0
     #   google-auth-httplib2
 uritemplate==4.1.1
     # via google-api-python-client
-urllib3==1.26.9
+urllib3==1.26.17
     # via requests
 yarl==1.7.2
     # via aiohttp
