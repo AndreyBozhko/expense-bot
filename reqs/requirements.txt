@@ -6,7 +6,7 @@
 #
 aiogram==2.21
     # via expense-bot (pyproject.toml)
-aiohttp==3.8.5
+aiohttp==3.8.6
     # via aiogram
 aiosignal==1.2.0
     # via aiohttp
