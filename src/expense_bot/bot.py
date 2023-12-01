@@ -52,5 +52,6 @@ async def handle_lambda_event(event: dict):
     Note: this function is NOT stateless - but for now
     it's OK to assume that AWS Lambda would reuse the same
     runtime for handling a few requests back-to-back."""
-    update = Update.model_construct(json.loads(event["body"]))
+    values = json.loads(event["body"])
+    update = Update.model_construct(**values)
     await dp.feed_update(bot, update)

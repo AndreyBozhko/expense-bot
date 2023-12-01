@@ -18,7 +18,8 @@ class AccessDenied(Exception):
 
 def auth_required(msg: Union[CallbackQuery, Message]) -> bool:
     """Allow messages from a single user only."""
-    if msg.from_user.id != 288450274:
+    user = msg.from_user
+    if not user or user.id != 288450274:
         raise AccessDenied("Unauthorized!")
     return True
 
@@ -100,6 +101,8 @@ def configure_start_command(dp: Dispatcher):
     async def cmd_start(message: Message):
         """Handler for `start` command."""
         user = message.from_user
+        assert user, "must not be None"
+
         text = Text(
             "Hi ",
             TextMention(user.full_name, user=user),

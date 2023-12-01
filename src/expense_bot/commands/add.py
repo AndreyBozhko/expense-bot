@@ -47,7 +47,7 @@ def configure_add_command(dp: Dispatcher):
     @dp.message(auth_required, StateFilter(Add.amount))
     @default_message_logging
     async def cmd_add_state1(message: Message, state: FSMContext):
-        await state.update_data(amount=float(message.text))
+        await state.update_data(amount=float(message.text or ""))
         await state.set_state(Add.vendor)
         await message.answer(
             "Description?",
@@ -66,7 +66,7 @@ def configure_add_command(dp: Dispatcher):
     async def cmd_add_state2(message: Message, state: FSMContext):
         data = await state.get_data()
 
-        amt, dt, vnd = data["amount"], data["dt"], message.text
+        amt, dt, vnd = data["amount"], data["dt"], message.text or ""
         item = ExpenseItem(
             amt,
             vnd,
@@ -81,6 +81,8 @@ def configure_add_command(dp: Dispatcher):
     @dp.callback_query(auth_required, StateFilter(Add.vendor))
     async def cb_add_state2(callback: CallbackQuery, state: FSMContext):
         msg = callback.message
+        assert msg, "must not be None"
+
         text = Text("👉 ", Italic(callback.data))
         await msg.answer(**text.as_kwargs())
 
