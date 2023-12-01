@@ -9,7 +9,7 @@ from .utils import setup_logging
 setup_logging()
 
 
-__version__ = "0.0.1"
+__version__ = "0.1.0"
 
 __all__ = [
     "GoogleSheets",
