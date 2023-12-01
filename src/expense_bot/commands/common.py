@@ -3,11 +3,11 @@ import logging
 from functools import wraps
 from typing import Any, Callable, Coroutine, Union, overload
 
-from aiogram import Dispatcher
-from aiogram.dispatcher import FSMContext
-from aiogram.dispatcher.filters import Text
-from aiogram.types import CallbackQuery, Message, Update
-from aiogram.types.message_entity import MessageEntity
+from aiogram import Dispatcher, F
+from aiogram.filters import Command, CommandObject, StateFilter
+from aiogram.fsm.context import FSMContext
+from aiogram.types import CallbackQuery, ErrorEvent, Message
+from aiogram.utils.formatting import Code, Text, TextMention
 
 logger = logging.getLogger()
 
@@ -30,6 +30,13 @@ def default_message_logging(coro: Callable[[Message], Coroutine]):
 
 @overload
 def default_message_logging(coro: Callable[[Message, FSMContext], Coroutine]):
+    ...
+
+
+@overload
+def default_message_logging(
+    coro: Callable[[Message, CommandObject, FSMContext], Coroutine]
+):
     ...
 
 
@@ -61,25 +68,25 @@ def default_message_logging(coro: Callable[..., Coroutine]):
 def configure_error_handling(dp: Dispatcher):
     """Configure bot handling of errors."""
 
-    @dp.errors_handler()
-    async def process_error(upd: Update, exc: Exception):
+    @dp.errors()
+    async def process_error(error: ErrorEvent):
         """Handle exceptions."""
-        msg = ["Something went wrong...", f"{exc.__class__.__name__}: {exc}"]
+        upd, exc = error.update, error.exception
+        msg = Text(
+            "Something went wrong...",
+            "\n\n",
+            Code(f"{exc.__class__.__name__}: {exc}"),
+        )
 
-        logger.warning("%s %s", *msg)
+        logger.warning(msg.render()[0])
         if upd.message:
-            await upd.message.answer(
-                "\n\n".join(msg),
-                entities=[
-                    MessageEntity("code", len(msg[0]) + 2, len(msg[1]))
-                ],
-            )
+            await upd.message.answer(**msg.as_kwargs())
 
         # dispatcher won't re-raise the exception
         # if a truthy value is returned from handler
         return exc
 
-    @dp.message_handler(auth_required)
+    @dp.message(auth_required)
     @default_message_logging
     async def cmd_unrecognized(message: Message):
         await message.answer("Command not recognized :(")
@@ -88,26 +95,24 @@ def configure_error_handling(dp: Dispatcher):
 def configure_start_command(dp: Dispatcher):
     """Configure logic behind /start command."""
 
-    @dp.message_handler(auth_required, commands=["start"])
+    @dp.message(auth_required, Command("start"))
     @default_message_logging
     async def cmd_start(message: Message):
         """Handler for `start` command."""
-        mention = message.from_user.mention
-        await message.answer(
-            f"Hi {mention}! 👋\nI'm your personal expense tracking bot!",
-            entities=[
-                MessageEntity("mention", 3, len(mention)),
-            ],
+        user = message.from_user
+        text = Text(
+            "Hi ",
+            TextMention(user.full_name, user=user),
+            "! 👋\nI'm your personal expense tracking bot!",
         )
+        await message.answer(**text.as_kwargs())
 
 
 def configure_cancel_command(dp: Dispatcher):
     """Configure logic behind /cancel command."""
 
-    @dp.message_handler(auth_required, state="*", commands="cancel")
-    @dp.message_handler(
-        auth_required, Text(equals="cancel", ignore_case=True), state="*"
-    )
+    @dp.message(auth_required, StateFilter("*"), Command("cancel"))
+    @dp.message(auth_required, F.text == "cancel", StateFilter("*"))
     @default_message_logging
     async def cmd_cancel(message: Message, state: FSMContext):
         current_state = await state.get_state()
@@ -118,5 +123,5 @@ def configure_cancel_command(dp: Dispatcher):
 
         operation = current_state.lower().split(":")[0]
 
-        await state.finish()
+        await state.clear()
         await message.answer(f"Operation /{operation} cancelled")

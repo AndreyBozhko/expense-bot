@@ -26,7 +26,7 @@ def get_routes_for_api(api_id: str) -> Iterable[tuple[str, str]]:
 
 
 async def main():
-    try:
+    async with bot.context():
         api_id, api_url = get_api_by_name("expenseBotAPI")
         _, route = next(get_routes_for_api(api_id))
 
@@ -34,8 +34,6 @@ async def main():
             api_url + route, allowed_updates=["message", "callback_query"]
         )
         return await bot.get_webhook_info()
-    finally:
-        await bot.close()
 
 
 if __name__ == "__main__":

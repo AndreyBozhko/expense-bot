@@ -54,4 +54,4 @@ line_length = 78
 
 [tool.pylint.main]
 good-names = ["dt", "dp"]
-disable = ["R0801"]
+disable = ["R0801", "R0903"]

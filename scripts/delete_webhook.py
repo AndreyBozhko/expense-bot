@@ -5,11 +5,9 @@ from expense_bot import bot
 
 
 async def main():
-    try:
+    async with bot.context():
         await bot.delete_webhook(drop_pending_updates=True)
         return await bot.get_webhook_info()
-    finally:
-        await bot.close()
 
 
 if __name__ == "__main__":

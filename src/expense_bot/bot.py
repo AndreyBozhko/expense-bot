@@ -4,7 +4,7 @@ import logging
 import os
 
 from aiogram import Bot, Dispatcher
-from aiogram.contrib.fsm_storage.memory import MemoryStorage
+from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import Update
 
 from .commands import (
@@ -32,7 +32,7 @@ def bot_token():
 
 
 bot = Bot(token=secrets["bot-token"])
-dp = Dispatcher(bot, storage=MemoryStorage())
+dp = Dispatcher(storage=MemoryStorage())
 
 # start - Start conversation
 # add - Record an expense item
@@ -44,9 +44,6 @@ configure_add_command(dp)
 configure_show_command(dp)
 configure_error_handling(dp)
 
-Dispatcher.set_current(dp)
-Bot.set_current(dp.bot)
-
 
 async def handle_lambda_event(event: dict):
     """Process the webhook payload sent to the Lambda function
@@ -55,5 +52,5 @@ async def handle_lambda_event(event: dict):
     Note: this function is NOT stateless - but for now
     it's OK to assume that AWS Lambda would reuse the same
     runtime for handling a few requests back-to-back."""
-    update = Update.to_object(json.loads(event["body"]))
-    await dp.process_update(update)
+    update = Update.model_construct(json.loads(event["body"]))
+    await dp.feed_update(bot, update)

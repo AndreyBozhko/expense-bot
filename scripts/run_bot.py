@@ -1,10 +1,9 @@
 """Run the bot in a long-polling mode."""
+import asyncio
 import json
 
-from aiogram import executor
-
 from expense_bot import Repository
-from expense_bot.bot import dp
+from expense_bot.bot import bot, dp
 from expense_bot.secrets import provides
 
 
@@ -14,8 +13,12 @@ def creds():
         return json.load(fin)
 
 
-if __name__ == "__main__":
+async def main():
     Repository.set_current(Repository.new("InMemory"))
-    executor.start_polling(
-        dp, skip_updates=True, allowed_updates=["message", "callback_query"]
+    await dp.start_polling(
+        bot, skip_updates=True, allowed_updates=["message", "callback_query"]
     )
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

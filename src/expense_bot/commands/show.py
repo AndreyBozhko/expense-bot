@@ -3,14 +3,13 @@ import logging
 from random import choice
 
 from aiogram import Dispatcher
-from aiogram.dispatcher import FSMContext
-from aiogram.dispatcher.filters.state import State, StatesGroup
+from aiogram.filters import Command, CommandObject, StateFilter
+from aiogram.fsm.context import FSMContext
+from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import CallbackQuery, Message
-from aiogram.types.inline_keyboard import (
-    InlineKeyboardButton,
-    InlineKeyboardMarkup,
-)
-from aiogram.types.message_entity import MessageEntity
+from aiogram.types.inline_keyboard_button import InlineKeyboardButton
+from aiogram.types.inline_keyboard_markup import InlineKeyboardMarkup
+from aiogram.utils.formatting import Bold, Code, Italic, Text
 
 from ..repository import Repository
 from ..utils import parse_date
@@ -28,13 +27,10 @@ async def _do_show(message: Message, dt_str: str):
 
     for item in items:
         vnd, amt = item.vnd, f"${item.amt:.2f}"
+        msg = Text(Bold(vnd), ": ", Code(amt))
         await message.answer(
-            vnd + ": " + amt,
             protect_content=True,
-            entities=[
-                MessageEntity("bold", 0, len(vnd)),
-                MessageEntity("code", len(vnd) + 2, len(amt)),
-            ],
+            **msg.as_kwargs(),
         )
 
 
@@ -47,40 +43,40 @@ class Show(StatesGroup):
 def configure_show_command(dp: Dispatcher):
     """Configure FSM behind /show command."""
 
-    @dp.message_handler(auth_required, commands=["show"])
+    @dp.message(auth_required, Command("show"))
     @default_message_logging
-    async def cmd_show_state0(message: Message):
-        args = message.get_args()
+    async def cmd_show_state0(
+        message: Message, command: CommandObject, state: FSMContext
+    ):
+        args = command.args
         if args:
             await _do_show(message, args)
             return
 
-        await Show.selected_date.set()
+        await state.set_state(Show.selected_date)
         await message.answer(
             "Which date?",
-            reply_markup=InlineKeyboardMarkup().add(
-                *[
-                    InlineKeyboardButton(data, callback_data=data)
-                    for data in ["today", "yesterday"]
+            reply_markup=InlineKeyboardMarkup(
+                inline_keyboard=[
+                    [
+                        InlineKeyboardButton(text=data, callback_data=data)
+                        for data in ["today", "yesterday"]
+                    ]
                 ]
             ),
         )
 
-    @dp.message_handler(auth_required, state=Show.selected_date)
+    @dp.message(auth_required, StateFilter(Show.selected_date))
     @default_message_logging
     async def cmd_show_state1(message: Message, state: FSMContext):
         await _do_show(message, message.text)
-        await state.finish()
+        await state.clear()
 
-    @dp.callback_query_handler(auth_required, state=Show.selected_date)
+    @dp.callback_query(auth_required, StateFilter(Show.selected_date))
     async def cb_show_state1(callback: CallbackQuery, state: FSMContext):
         msg = callback.message
-        await msg.answer(
-            "👉 " + callback.data,
-            entities=[
-                MessageEntity("italic", 2, len(callback.data)),
-            ],
-        )
+        text = Text("👉 ", Italic(callback.data))
+        await msg.answer(**text.as_kwargs())
 
-        msg.text = callback.data
+        msg = msg.model_copy(update={"text": callback.data})
         await cmd_show_state1(msg, state)

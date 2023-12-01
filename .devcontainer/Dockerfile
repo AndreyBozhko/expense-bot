@@ -1,5 +1,5 @@
 FROM python:3.9-buster@sha256:a21bc1f5190fa4f5d13dbdec6adc8d65ae2d3025411ecab367f616831dd570cb
-RUN pip install --no-cache-dir --upgrade pip==22.3.1 setuptools==65.6.3 wheel==0.38.4
+RUN pip install --no-cache-dir --upgrade pip==22.3.1 setuptools==65.6.3 wheel==0.42.0
 
 ENV PIP_PREFIX=/usr/local/share/pip_global
 ENV PATH=${PATH}:${PIP_PREFIX}/bin
@@ -25,5 +25,5 @@ RUN apt-get update \
 
 USER vscode
 
-RUN pip install --no-cache-dir 'pip-tools==6.12.1' \
+RUN pip install --no-cache-dir 'pip-tools==6.12.1' 'wheel==0.42.0' \
     && pip install --no-cache-dir pylint mypy black flake8

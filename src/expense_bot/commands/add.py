@@ -3,14 +3,13 @@ import logging
 from random import choice
 
 from aiogram import Dispatcher
-from aiogram.dispatcher import FSMContext
-from aiogram.dispatcher.filters.state import State, StatesGroup
+from aiogram.filters import Command, CommandObject, StateFilter
+from aiogram.fsm.context import FSMContext
+from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import CallbackQuery, Message
-from aiogram.types.inline_keyboard import (
-    InlineKeyboardButton,
-    InlineKeyboardMarkup,
-)
-from aiogram.types.message_entity import MessageEntity
+from aiogram.types.inline_keyboard_button import InlineKeyboardButton
+from aiogram.types.inline_keyboard_markup import InlineKeyboardMarkup
+from aiogram.utils.formatting import Italic, Text
 
 from ..model import EARN, SPEND, ExpenseItem
 from ..repository import Repository
@@ -30,37 +29,39 @@ class Add(StatesGroup):
 def configure_add_command(dp: Dispatcher):
     """Configure FSM behind /add command."""
 
-    @dp.message_handler(auth_required, commands=["add"])
+    @dp.message(auth_required, Command("add"))
     @default_message_logging
-    async def cmd_add_state0(message: Message):
-        dt_str = message.get_args() or "today"
+    async def cmd_add_state0(
+        message: Message, command: CommandObject, state: FSMContext
+    ):
+        dt_str = command.args or "today"
         dt = parse_date(dt_str)
 
-        await Add.amount.set()
-
-        state = dp.current_state()
+        await state.set_state(Add.amount)
         await state.update_data(dt=dt)
 
         await message.answer("Amount in $?")
 
     income_descriptions = ["Paycheck", "Cashback"]
 
-    @dp.message_handler(auth_required, state=Add.amount)
+    @dp.message(auth_required, StateFilter(Add.amount))
     @default_message_logging
     async def cmd_add_state1(message: Message, state: FSMContext):
         await state.update_data(amount=float(message.text))
-        await Add.next()
+        await state.set_state(Add.vendor)
         await message.answer(
             "Description?",
-            reply_markup=InlineKeyboardMarkup().add(
-                *[
-                    InlineKeyboardButton(desc, callback_data=desc)
-                    for desc in income_descriptions
-                ],
+            reply_markup=InlineKeyboardMarkup(
+                inline_keyboard=[
+                    [
+                        InlineKeyboardButton(text=desc, callback_data=desc)
+                        for desc in income_descriptions
+                    ],
+                ]
             ),
         )
 
-    @dp.message_handler(auth_required, state=Add.vendor)
+    @dp.message(auth_required, StateFilter(Add.vendor))
     @default_message_logging
     async def cmd_add_state2(message: Message, state: FSMContext):
         data = await state.get_data()
@@ -75,17 +76,13 @@ def configure_add_command(dp: Dispatcher):
         Repository.current().add(item, dt=dt)
 
         await message.answer(choice(["🎉", "🥳", "🙌", "✔️", "💾"]))
-        await state.finish()
+        await state.clear()
 
-    @dp.callback_query_handler(auth_required, state=Add.vendor)
+    @dp.callback_query(auth_required, StateFilter(Add.vendor))
     async def cb_add_state2(callback: CallbackQuery, state: FSMContext):
         msg = callback.message
-        await msg.answer(
-            "👉 " + callback.data,
-            entities=[
-                MessageEntity("italic", 2, len(callback.data)),
-            ],
-        )
+        text = Text("👉 ", Italic(callback.data))
+        await msg.answer(**text.as_kwargs())
 
-        msg.text = callback.data
+        msg = msg.model_copy(update={"text": callback.data})
         await cmd_add_state2(msg, state)
