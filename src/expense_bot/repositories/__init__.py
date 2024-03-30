@@ -1,4 +1,5 @@
 """Storage implementations."""
+
 from collections import defaultdict
 from datetime import date
 from typing import Iterable

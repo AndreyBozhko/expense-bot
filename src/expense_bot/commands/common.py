@@ -1,4 +1,5 @@
 """Common bot configurations."""
+
 import logging
 from functools import wraps
 from typing import Any, Callable, Coroutine, Union, overload
@@ -25,20 +26,19 @@ def auth_required(msg: Union[CallbackQuery, Message]) -> bool:
 
 
 @overload
-def default_message_logging(coro: Callable[[Message], Coroutine]):
-    ...
+def default_message_logging(coro: Callable[[Message], Coroutine]): ...
 
 
 @overload
-def default_message_logging(coro: Callable[[Message, FSMContext], Coroutine]):
-    ...
+def default_message_logging(
+    coro: Callable[[Message, FSMContext], Coroutine]
+): ...
 
 
 @overload
 def default_message_logging(
     coro: Callable[[Message, CommandObject, FSMContext], Coroutine]
-):
-    ...
+): ...
 
 
 def default_message_logging(coro: Callable[..., Coroutine]):

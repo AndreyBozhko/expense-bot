@@ -1,4 +1,5 @@
 """Google Sheets-backed storage."""
+
 import logging
 from datetime import date
 from enum import Enum, auto

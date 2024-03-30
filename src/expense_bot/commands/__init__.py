@@ -1,4 +1,5 @@
 """Bot commands implementation."""
+
 from .add import configure_add_command
 from .common import (
     configure_cancel_command,

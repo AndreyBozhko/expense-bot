@@ -1,4 +1,5 @@
 """Implementation of /add command."""
+
 import logging
 from random import choice
 

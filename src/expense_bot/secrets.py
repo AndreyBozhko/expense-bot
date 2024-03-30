@@ -1,4 +1,5 @@
 """Utilities to handle secrets."""
+
 from functools import cache
 from typing import Any, Callable
 

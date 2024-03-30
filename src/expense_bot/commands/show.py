@@ -1,4 +1,5 @@
 """Implementation of /show command."""
+
 import logging
 from random import choice
 
