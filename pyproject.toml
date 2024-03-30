@@ -43,7 +43,7 @@ version = {attr = "expense_bot.__version__"}
 line-length = 78
 
 [tool.flake8]
-ignore = ["E203"]
+ignore = ["E203", "E704"]
 
 [tool.mypy]
 ignore_missing_imports = true
