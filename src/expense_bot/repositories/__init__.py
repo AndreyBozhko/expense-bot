@@ -21,8 +21,7 @@ class InMemory(Repository):
         self._storage: _StorageType = defaultdict(list)
 
     def get_all(self, *, dt: date) -> Iterable[ExpenseItem]:
-        vals = self._storage[dt] if dt in self._storage else []
-        return vals
+        return self._storage.get(dt) or []
 
     def add(self, item: ExpenseItem, /, *, dt: date):
         self._storage[dt].append(item)
