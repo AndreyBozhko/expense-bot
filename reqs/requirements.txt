@@ -67,7 +67,7 @@ pydantic-core==2.14.5
     # via pydantic
 pyparsing==3.0.9
     # via httplib2
-requests==2.31.0
+requests==2.32.3
     # via google-api-core
 rsa==4.8
     # via google-auth
