@@ -26,7 +26,7 @@ botocore==1.23.32
     #   s3transfer
 cachetools==5.2.0
     # via google-auth
-certifi==2023.7.22
+certifi==2024.7.4
     # via
     #   aiogram
     #   requests
@@ -165,7 +165,7 @@ typing-extensions==4.8.0
     #   pylint
 uritemplate==4.1.1
     # via google-api-python-client
-urllib3==1.26.18
+urllib3==1.26.19
     # via
     #   botocore
     #   requests
