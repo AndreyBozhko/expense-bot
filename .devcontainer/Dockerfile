@@ -1,5 +1,5 @@
 FROM python:3.9-buster@sha256:a21bc1f5190fa4f5d13dbdec6adc8d65ae2d3025411ecab367f616831dd570cb
-RUN pip install --no-cache-dir --upgrade pip==22.3.1 setuptools==65.6.3 wheel==0.43.0 \
+RUN pip install --no-cache-dir --upgrade pip==22.3.1 setuptools==71.0.4 wheel==0.43.0 \
     && pip install --no-cache-dir uv
 
 ENV PYTHONPATH=${PYTHONPATH}:/workspaces/expense-bot/src
