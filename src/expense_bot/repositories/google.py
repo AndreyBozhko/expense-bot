@@ -101,7 +101,10 @@ class GoogleSheets(Repository):
         amts = [float(p) for p in vals[:-1] if p]
 
         assert len(amts) == len(descr), "Descriptions don't match amounts!"
-        return [ExpenseItem(amt, vnd, cat) for amt, vnd in zip(amts, descr)]
+        return [
+            ExpenseItem(amt, vnd, cat)
+            for amt, vnd in zip(amts, descr, strict=True)
+        ]
 
     def _get_cells(
         self, page: str, row: int, *, render: Render

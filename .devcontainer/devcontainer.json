@@ -1,29 +1,31 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.177.0/containers/cpp
 {
-    "name": "Python 3.9",
+    "name": "Python 3.13",
     "build": {
         "dockerfile": "Dockerfile"
     },
-    // Set *default* container specific settings.json values on container create.
-    "settings": {
-        // "terminal.integrated.shell.linux": "/bin/bash"
-        "python.formatting.provider": "black",
-        "python.formatting.blackArgs": [
-            "--line-length",
-            "78"
-        ],
-        "python.linting.flake8Enabled": true,
-        "python.linting.mypyEnabled": true,
-        "python.linting.lintOnSave": true,
-        "editor.formatOnSave": true
+    "customizations": {
+        "vscode": {
+            "settings": {
+                // "terminal.integrated.shell.linux": "/bin/bash"
+                "python.formatting.provider": "black",
+                "python.formatting.blackArgs": [
+                    "--line-length",
+                    "78"
+                ],
+                "python.linting.flake8Enabled": true,
+                "python.linting.mypyEnabled": true,
+                "python.linting.lintOnSave": true,
+                "editor.formatOnSave": true
+            },
+            "extensions": [
+                "ms-python.python",
+                "ms-azuretools.vscode-docker",
+                "eamodio.gitlens"
+            ]
+        }
     },
-    // Add the IDs of extensions you want installed when the container is created.
-    "extensions": [
-        "ms-python.python",
-        "ms-azuretools.vscode-docker",
-        "eamodio.gitlens"
-    ],
     // Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
     "remoteUser": "vscode"
 }

@@ -6,10 +6,10 @@ requires = ["setuptools", "wheel"]
 name = "expense-bot"
 description = "A personal expense bot"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.13"
 classifiers=[
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.13",
 ]
 dynamic = ["version"]
 dependencies = [
@@ -21,8 +21,8 @@ dependencies = [
 dev = [
     "awslambdaric",
     "black",
-    "boto3==1.20.32",
-    "botocore==1.23.32",
+    "boto3",
+    "botocore",
     "flake8",
     "flake8-pyproject",
     "google-api-python-client-stubs",
@@ -30,7 +30,7 @@ dev = [
     "pylint",
     "pytest",
     "ruff",
-    "setuptools==71.0.4",
+    "setuptools==75.8.0",
     "wheel",
 ]
 
@@ -44,7 +44,7 @@ version = {attr = "expense_bot.__version__"}
 line-length = 78
 
 [tool.flake8]
-ignore = ["E203", "E704"]
+ignore = ["E203", "E226", "E704"]
 
 [tool.mypy]
 ignore_missing_imports = true
