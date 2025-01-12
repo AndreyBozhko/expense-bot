@@ -58,6 +58,8 @@ jobs:
         isort -c src/
 
     - name: Lint Code (pylint)
+      env:
+        BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
       run: |
         source venv/bin/activate
         pylint src/
