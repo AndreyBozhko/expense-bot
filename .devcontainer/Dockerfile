@@ -1,5 +1,5 @@
 FROM python:3.13-bullseye@sha256:99979462fff2e165877ea3d7f341988d36bce0e9b3f21c00574141ca5b53fe14
-RUN pip install --no-cache-dir --upgrade pip==24.3.1 setuptools==75.8.0 wheel==0.45.1 \
+RUN pip install --no-cache-dir --upgrade pip==24.3.1 setuptools==80.9.0 wheel==0.45.1 \
     && pip install --no-cache-dir uv
 
 ENV PYTHONPATH=${PYTHONPATH}:/workspaces/expense-bot/src
