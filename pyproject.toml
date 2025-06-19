@@ -30,8 +30,6 @@ dev = [
     "pylint",
     "pytest",
     "ruff",
-    "setuptools==80.9.0",
-    "wheel",
 ]
 
 [tool.setuptools]
@@ -66,3 +64,7 @@ select = [
     "I",
     "R",
 ]
+
+[tool.uv]
+link-mode = "copy"
+python-downloads = "never"
