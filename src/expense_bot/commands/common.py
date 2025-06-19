@@ -31,13 +31,13 @@ def default_message_logging(coro: Callable[[Message], Coroutine]): ...
 
 @overload
 def default_message_logging(
-    coro: Callable[[Message, FSMContext], Coroutine]
+    coro: Callable[[Message, FSMContext], Coroutine],
 ): ...
 
 
 @overload
 def default_message_logging(
-    coro: Callable[[Message, CommandObject, FSMContext], Coroutine]
+    coro: Callable[[Message, CommandObject, FSMContext], Coroutine],
 ): ...
 
 
