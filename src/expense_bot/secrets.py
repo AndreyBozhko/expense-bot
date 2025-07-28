@@ -28,5 +28,6 @@ secrets = SecretsProvider()
 provides = secrets.register
 
 __all__ = [
+    "provides",
     "secrets",
 ]
