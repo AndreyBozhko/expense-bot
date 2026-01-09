@@ -13,7 +13,7 @@ dependencies = [
     "google-api-python-client",
 ]
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
     "awslambdaric",
     "black",

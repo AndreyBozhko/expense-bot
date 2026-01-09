@@ -37,7 +37,7 @@ if __name__ == "__main__":
 
     print(f"-> Installing packages into {TMP_DIR}")
     subprocess.run(
-        f"uv sync --frozen --no-install-project --project {TMP_DIR}".split(),
+        f"uv sync --frozen --no-default-groups --no-install-project --project {TMP_DIR}".split(),
         check=True,
     )
     subprocess.run(
