@@ -25,6 +25,7 @@ _T = TypeVar("_T")
 
 def all_subclasses(cls: type) -> Iterable[type]:
     """Return all subclasses of a given class."""
+    subcls: type
     for subcls in cls.__subclasses__():
         yield from all_subclasses(subcls)
         yield subcls
